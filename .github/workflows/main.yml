@@ -49,3 +49,10 @@ jobs:
           --image gcr.io/$PROJECT_ID/$REPO_NAME:$GITHUB_RUN_NUMBER \
           --platform managed \
           --allow-unauthenticated
+      - name: send custom message
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.GLOBAL_TELEGRAM_TO_NAT }}
+          token: ${{ secrets.GLOBAL_TELEGRAM_TOKEN }}
+          message: |
+            $REPO_NAME-$BRANCH_NAME Deployed.
