@@ -7,14 +7,15 @@ const pkg = require('./package.json')
 const version = pkg.version
 const app = express()
 const mqtt = require('mqtt')
+const basicAuth = require('express-basic-auth')
 
 app.use(express.static('dist'))
 
 // app.use('/react', express.static('react-app/build'))
 // app.use(express.static('vue-app/dist'))
-// app.use(basicAuth({
-//     users: { 'admin': 'supersecret' }
-// }))
+app.use(basicAuth({
+    users: { 'admin': 'supersecret' }
+}))
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
