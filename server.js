@@ -31,20 +31,27 @@ app.get('/api/version', (req, res) => {
 
 app.get("/check", (req, res) => {
   const MQTT_HOST = process.env.MQTT_HOST
-  res.status(200).send(`check ${MQTT_HOST}`)
+  const client = mqtt.connect(`tcp://:1883`, {
+    clientId: 'mqtt-hc' + Math.random()
+  })
+  client.on('message', (topic, msg) => {
+    console.log(topic, msg)
+    client.end()
+    res.status(200).send(`OK`)
+  })
+
+  client.on('connect', () => {
+    console.log('connected')
+    client.subscribe("#")
+  })
+
+  client.on('error', () => {
+    res.status(500).send(`FAILED`)
+  })
+
 })
-  // const client = mqtt.connect(`tcp://:1883`, {
-  //   clientId: 'mqtt-healthcheck'
-  // })
 
-  // client.on('message', (topic, msg) => {
-  //   console.log(topic, msg)
-  // })
 
-  // client.on('connect', () => {
-  //   console.log('connected')
-  //   client.subscribe("#")
-  // })
 
 const paths = app._router.stack.filter((v) => v.route).map((v) => v.route.path)
 
