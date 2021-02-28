@@ -31,7 +31,7 @@ app.get('/api/version', (req, res) => {
 
 app.get("/check", (req, res) => {
   const MQTT_HOST = process.env.MQTT_HOST
-  const client = mqtt.connect(`tcp://:1883`, {
+  const client = mqtt.connect(`tcp://:${MQTT_HOST}:1883`, {
     clientId: 'mqtt-hc' + Math.random()
   })
   client.on('message', (topic, msg) => {
