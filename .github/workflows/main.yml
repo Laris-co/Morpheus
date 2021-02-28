@@ -59,4 +59,4 @@ jobs:
           to: ${{ secrets.GLOBAL_TELEGRAM_TO_NAT }}
           token: ${{ secrets.GLOBAL_TELEGRAM_TOKEN }}
           message: |
-            $REPO_NAME-$BRANCH_NAME Deployed.
+            ${env.REPO_NAME}-${env.BRANCH_NAME} Deployed.
