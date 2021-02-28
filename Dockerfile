@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 ENV NODE_ENV=production
-COPY .env ./.env
+# COPY .env ./.env
 
 # Install production dependencies.
 # RUN npm install --only=production
