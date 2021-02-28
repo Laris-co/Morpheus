@@ -63,8 +63,11 @@ app.get('/check', (req, res) => {
   }
 
   const mqttClient = mqtt.connect(`mqtt://${MQTT_HOST}`, options)
+  let done = false
 
   mqttClient.on('message', (topic, msg) => {
+    if (done) return
+    done = true
     console.log(topic, msg)
     mqttClient.end()
     res.status(200).send(`OK`)
