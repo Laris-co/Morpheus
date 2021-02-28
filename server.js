@@ -40,7 +40,7 @@ app.get('/api/version', (req, res) => {
 app.get('/ss', async (req, res) => {
   const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
   const client = new SecretManagerServiceClient()
-  // const { Storage } = require('@google-cloud/storage')
+  const { Storage } = require('@google-cloud/storage')
 
   // Instantiates a client. If you don't specify credentials when constructing
   // the client, the client library will look for credentials in the
