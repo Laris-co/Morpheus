@@ -63,14 +63,19 @@ app.get('/ss', async (req, res) => {
   // }
   // listBuckets()
 
+  const name = 'projects/laris-co-playground/secrets/yeeha/versions/latest'
+
   async function getSecret() {
-    const [secret] = await client.getSecret({ name: 'yeeha' })
+    const [secret] = await client.getSecret({
+      name: name,
+    })
+
     const policy = secret.replication.replication
 
     console.info(`Found secret ${secret.name} (${policy})`)
   }
 
-  await getSecret()
+  getSecret()
 
   res.status(200).send('done')
 })
