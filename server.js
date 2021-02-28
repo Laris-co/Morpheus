@@ -30,8 +30,7 @@ app.get('/api/version', (req, res) => {
 
 app.get("/check", (req, res) => {
   const MQTT_HOST = process.env.MQTT_HOST
-  console.log(MQTT_HOST)
-  res.status(200).send(`check ${version}`)
+  res.status(200).send(`check ${MQTT_HOST}`)
 })
   // const client = mqtt.connect(`tcp://:1883`, {
   //   clientId: 'mqtt-healthcheck'
