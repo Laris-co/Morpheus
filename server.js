@@ -59,8 +59,8 @@ app.get("/check", (req, res) => {
     client.subscribe("#")
   })
 
-  client.on('error', () => {
-    res.status(500).send(`FAILED`)
+  client.on('error', (err) => {
+    res.status(500).send(`FAILED: ${err}`)
     clearTimeout(timer)
   })
 
