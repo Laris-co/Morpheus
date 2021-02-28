@@ -34,7 +34,7 @@ jobs:
         run: |
           docker build \
             --build-arg MQTT_HOST=$MQTT_HOST \
-            --build-arg MQTT_USER=$MQTT_USER_NAME \
+            --build-arg MQTT_USER=$MQTT_USERNAME \
             --build-arg MQTT_PASSWORD=$MQTT_PASSWORD \
             --build-arg MQTT_PORT=1883 \
             -t "gcr.io/$PROJECT_ID/$REPO_NAME:${GITHUB_RUN_NUMBER}" .
