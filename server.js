@@ -10,7 +10,6 @@ const mqtt = require('mqtt')
 const basicAuth = require('express-basic-auth')
 
 app.use(express.static('dist'))
-const encrypted = require('@dtinth/encrypted')()
 const MQTT_HOST = process.env.MQTT_HOST
 const MQTT_USERNAME = process.env.MQTT_USERNAME
 const MQTT_PASSWORD = process.env.MQTT_PASSWORD
@@ -62,8 +61,7 @@ app.get('/check', (req, res) => {
     username: MQTT_USERNAME,
     password: MQTT_PASSWORD,
   }
-  // export ENCRYPTION_SECRET=`openssl rand -base64 32`
-  console.log(options, `mqtt://${MQTT_HOST}`)
+
   const mqttClient = mqtt.connect(`mqtt://${MQTT_HOST}`, options)
 
   mqttClient.on('message', (topic, msg) => {
