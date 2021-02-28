@@ -46,7 +46,7 @@ app.get("/check", (req, res) => {
     password: MQTT_PASSWORD,
   }
 
-  const client = mqtt.connect(`tcp://:${MQTT_HOST}`, options)
+  const client = mqtt.connect(`tcp://${MQTT_HOST}`, options)
   client.on('message', (topic, msg) => {
     console.log(topic, msg)
     client.end()
