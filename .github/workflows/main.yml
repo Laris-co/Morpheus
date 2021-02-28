@@ -10,6 +10,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GLOBAL_PROJECT_ID }}
   RUN_REGION: ${{ secrets.GLOBAL_RUN_REGION }}
+  DOT_ENV: ${{ secrets.DOT_ENV }}
   MQTT_HOST: ${{ secrets.MQTT_HOST }}
   MQTT_USERNAME: ${{ secrets.MQTT_USERNAME }}
   MQTT_PASSWORD: ${{ secrets.MQTT_PASSWORD }}
@@ -34,6 +35,8 @@ jobs:
       - run: gcloud auth configure-docker
       - name: Local Build
         run: |
+          echo $DOT_ENV >> .env
+          cat .env
           docker build \
             --build-arg MQTT_HOST=$MQTT_HOST \
             --build-arg MQTT_USER=$MQTT_USERNAME \
