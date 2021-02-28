@@ -34,11 +34,9 @@ app.get("/check", (req, res) => {
     res.status(500).send('timeout')
   }, 4000)
 
-  const MQTT_HOST = process.env.MQTT_HOST
-  const MQTT_USERNAME = process.env.MQTT_USERNAME
-  const MQTT_PASSWORD = process.env.MQTT_PASSWORD
-  // const MQTT_CLIENT_ID = process.env.MQTT_HOST
-  // const MQTT_PORT = process.env.MQTT_HOST
+    const MQTT_HOST = process.env.MQTT_HOST
+    const MQTT_USERNAME = process.env.MQTT_USERNAME
+    const MQTT_PASSWORD = process.env.MQTT_PASSWORD
     const options = {
     port: 1883,
     clientId: 'mqtt-hc' + Math.random(),
@@ -46,7 +44,7 @@ app.get("/check", (req, res) => {
     password: MQTT_PASSWORD,
   }
 
-  const client = mqtt.connect(`tcp://${MQTT_HOST}`, options)
+  const client = mqtt.connect(`mqtt://${MQTT_HOST}`, options)
   client.on('message', (topic, msg) => {
     console.log(topic, msg)
     client.end()
