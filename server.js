@@ -41,7 +41,7 @@ app.get('/ss', async (req, res) => {
   const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
   const client = new SecretManagerServiceClient()
 
-  const name = 'projects/laris-co-playground/secrets/yeeha/versions/1'
+  const name = 'projects/laris-co-playground/secrets/yeeha'
 
   async function getSecret() {
     const [secret] = await client.getSecret({
