@@ -38,9 +38,7 @@ app.get('/api/version', (req, res) => {
 })
 
 const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
-
-app.get('/check', (req, res) => {
-  // Instantiates a client
+app.get('/ss', async (req, res) => {
   const client = new SecretManagerServiceClient()
 
   async function getSecret() {
@@ -50,7 +48,10 @@ app.get('/check', (req, res) => {
     console.info(`Found secret ${secret.name} (${policy})`)
   }
 
-  getSecret()
+  await getSecret()
+})
+
+app.get('/check', (req, res) => {
   let timer = setTimeout(() => {
     res.status(500).send('timeout')
   }, 4000)
