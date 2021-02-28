@@ -37,9 +37,31 @@ app.get('/api/version', (req, res) => {
   res.status(200).send(`${version}`)
 })
 
-const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
 app.get('/ss', async (req, res) => {
+  const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
   const client = new SecretManagerServiceClient()
+  const { Storage } = require('@google-cloud/storage')
+
+  // Instantiates a client. If you don't specify credentials when constructing
+  // the client, the client library will look for credentials in the
+  // environment.
+  const storage = new Storage()
+  // Makes an authenticated API request.
+  async function listBuckets() {
+    try {
+      const results = await storage.getBuckets()
+
+      const [buckets] = results
+
+      console.log('Buckets:')
+      buckets.forEach((bucket) => {
+        console.log(bucket.name)
+      })
+    } catch (err) {
+      console.error('ERROR:', err)
+    }
+  }
+  listBuckets()
 
   async function getSecret() {
     const [secret] = await client.getSecret({ name: 'yeeha' })
@@ -49,6 +71,8 @@ app.get('/ss', async (req, res) => {
   }
 
   await getSecret()
+
+  res.status(200).send('done')
 })
 
 app.get('/check', (req, res) => {
