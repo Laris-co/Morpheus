@@ -35,6 +35,7 @@ jobs:
       - run: gcloud auth configure-docker
       - name: Local Build
         run: |
+          gcloud secrets versions list yeeha
           docker build \
             --build-arg MQTT_HOST=$MQTT_HOST \
             --build-arg MQTT_USER=$MQTT_USERNAME \
