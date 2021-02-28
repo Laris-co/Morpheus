@@ -13,6 +13,8 @@ env:
   MQTT_HOST: ${{ secrets.MQTT_HOST }}
   MQTT_USERNAME: ${{ secrets.MQTT_USERNAME }}
   MQTT_PASSWORD: ${{ secrets.MQTT_PASSWORD }}
+  BASIC_AUTH_USERNAME: ${{ secrets.GLOBAL_BASIC_AUTH_USERNAME_N }}
+  BASIC_AUTH_PASSWORD: ${{ secrets.GLOBAL_BASIC_AUTH_PASSWORD_N }}
   MQTT_PORT: ${{ secrets.MQTT_PORT }}
   REPO_NAME: ${{ github.event.repository.name }}
   REPO_OWNER: ${{ github.event.repository.owner.login }}
