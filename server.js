@@ -44,17 +44,17 @@ app.get('/check', (req, res) => {
   // Instantiates a client
   const client = new SecretManagerServiceClient()
 
-  // async function getSecret() {
-  //   const [secret] = await client.getSecret({ name: 'yeeha' })
-  //   const policy = secret.replication.replication
+  async function getSecret() {
+    const [secret] = await client.getSecret({ name: 'yeeha' })
+    const policy = secret.replication.replication
 
-  //   console.info(`Found secret ${secret.name} (${policy})`)
-  // }
+    console.info(`Found secret ${secret.name} (${policy})`)
+  }
 
-  // getSecret()
-  // let timer = setTimeout(() => {
-  //   res.status(500).send('timeout')
-  // }, 4000)
+  getSecret()
+  let timer = setTimeout(() => {
+    res.status(500).send('timeout')
+  }, 4000)
 
   const options = {
     port: 1883,
@@ -64,21 +64,21 @@ app.get('/check', (req, res) => {
   }
   // export ENCRYPTION_SECRET=`openssl rand -base64 32`
   console.log(options, `mqtt://${MQTT_HOST}`)
-  const client = mqtt.connect(`mqtt://${MQTT_HOST}`, options)
+  const mqttClient = mqtt.connect(`mqtt://${MQTT_HOST}`, options)
 
-  client.on('message', (topic, msg) => {
+  mqttClient.on('message', (topic, msg) => {
     console.log(topic, msg)
-    client.end()
+    mqttClient.end()
     res.status(200).send(`OK`)
     clearTimeout(timer)
   })
 
-  client.on('connect', () => {
+  mqttClient.on('connect', () => {
     console.log('connected')
-    client.subscribe('#')
+    mqttClient.subscribe('#')
   })
 
-  client.on('error', (err) => {
+  mqttClient.on('error', (err) => {
     res.status(500).send(`FAILED: ${err}`)
     clearTimeout(timer)
   })
