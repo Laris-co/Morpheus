@@ -30,6 +30,10 @@ app.get('/api/version', (req, res) => {
 })
 
 app.get("/check", (req, res) => {
+  let timer = setTimeout(() => {
+    res.status(500).send('timeout')
+  }, 4000)
+
   const MQTT_HOST = process.env.MQTT_HOST
   const MQTT_USERNAME = process.env.MQTT_USERNAME
   const MQTT_PASSWORD = process.env.MQTT_PASSWORD
@@ -37,7 +41,7 @@ app.get("/check", (req, res) => {
   // const MQTT_PORT = process.env.MQTT_HOST
     const options = {
     port: 1883,
-    clientId: client_id || 'mqtt-hc' + Math.random(),
+    clientId: 'mqtt-hc' + Math.random(),
     username: MQTT_USERNAME,
     password: MQTT_PASSWORD,
   }
@@ -47,6 +51,7 @@ app.get("/check", (req, res) => {
     console.log(topic, msg)
     client.end()
     res.status(200).send(`OK`)
+    clearTimeout(timer)
   })
 
   client.on('connect', () => {
@@ -56,6 +61,7 @@ app.get("/check", (req, res) => {
 
   client.on('error', () => {
     res.status(500).send(`FAILED`)
+    clearTimeout(timer)
   })
 
 })
