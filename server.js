@@ -41,9 +41,9 @@ app.get('/ss', async (req, res) => {
   const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
   const client = new SecretManagerServiceClient()
 
-  const name = 'projects/laris-co-playground/secrets/yeeha'
 
   async function getSecret() {
+  const name = 'projects/laris-co-playground/secrets/yeeha'
     const [secret] = await client.getSecret({
       name: name,
     })
@@ -53,6 +53,13 @@ app.get('/ss', async (req, res) => {
     console.info(`Found secret ${secret.name} (${policy})`, secret)
   }
 
+  async function getSecretVersion() {
+    const name = 'projects/laris-co-playground/secrets/yeeha/versions/latest'
+    const [version] = await client.getSecretVersion({
+      name: name,
+    });
+
+    console.info(`Found secret ${version.name} with state ${version.state}`);
   // const parent = 'projects/laris-co-playground'
   // async function listSecrets() {
   //   const [secrets] = await client.listSecrets({
