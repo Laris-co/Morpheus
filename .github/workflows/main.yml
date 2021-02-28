@@ -11,6 +11,9 @@ env:
   PROJECT_ID: ${{ secrets.GLOBAL_PROJECT_ID }}
   RUN_REGION: ${{ secrets.GLOBAL_RUN_REGION }}
   MQTT_HOST: ${{ secrets.MQTT_HOST }}
+  MQTT_USERNAME: ${{ secrets.MQTT_USERNAME }}
+  MQTT_PASSWORD: ${{ secrets.MQTT_PASSWORD }}
+  MQTT_PORT: ${{ secrets.MQTT_PORT }}
   REPO_NAME: ${{ github.event.repository.name }}
   REPO_OWNER: ${{ github.event.repository.owner.login }}
   SA: ${{ secrets.GLOBAL_SA_KEY }}
@@ -30,10 +33,10 @@ jobs:
       - name: Local Build
         run: |
           docker build \
-            --build-arg MQTT_USER=$REPO_NAME \
             --build-arg MQTT_HOST=$MQTT_HOST \
-            --build-arg MQTT_PASSWORD=$REPO_NAME \
-            --build-arg MQTT_PORT=$REPO_NAME \
+            --build-arg MQTT_USER=$MQTT_USER_NAME \
+            --build-arg MQTT_PASSWORD=$MQTT_PASSWORD \
+            --build-arg MQTT_PORT=1883 \
             -t "gcr.io/$PROJECT_ID/$REPO_NAME:${GITHUB_RUN_NUMBER}" .
       - run: docker push "gcr.io/$PROJECT_ID/$REPO_NAME:${GITHUB_RUN_NUMBER}"
       # - run: |

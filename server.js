@@ -31,9 +31,18 @@ app.get('/api/version', (req, res) => {
 
 app.get("/check", (req, res) => {
   const MQTT_HOST = process.env.MQTT_HOST
-  const client = mqtt.connect(`tcp://:${MQTT_HOST}:1883`, {
-    clientId: 'mqtt-hc' + Math.random()
-  })
+  const MQTT_USERNAME = process.env.MQTT_USERNAME
+  const MQTT_PASSWORD = process.env.MQTT_PASSWORD
+  // const MQTT_CLIENT_ID = process.env.MQTT_HOST
+  // const MQTT_PORT = process.env.MQTT_HOST
+    const options = {
+    port: 1883,
+    clientId: client_id || 'mqtt-hc' + Math.random(),
+    username: MQTT_USERNAME,
+    password: MQTT_PASSWORD,
+  }
+
+  const client = mqtt.connect(`tcp://:${MQTT_HOST}`, options)
   client.on('message', (topic, msg) => {
     console.log(topic, msg)
     client.end()
