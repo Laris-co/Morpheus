@@ -54,11 +54,16 @@ app.get('/ss', async (req, res) => {
 
   async function getSecretVersion() {
     const name = 'projects/laris-co-playground/secrets/yeeha/versions/latest'
-    const [version] = await client.getSecretVersion({
+
+    // WARNING: Do not print the secret in a production environment - this
+    // snippet is showing how to access the secret material.
+    const [version] = await client.accessSecretVersion({
       name: name,
     })
+    const payload = version.payload.data.toString()
 
     console.info(`Found secret ${version.name} with state ${version.state}`, version)
+    console.info(`Payload: ${payload}`)
   }
   // const parent = 'projects/laris-co-playground'
   // async function listSecrets() {
