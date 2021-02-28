@@ -40,28 +40,6 @@ app.get('/api/version', (req, res) => {
 app.get('/ss', async (req, res) => {
   const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
   const client = new SecretManagerServiceClient()
-  const { Storage } = require('@google-cloud/storage')
-
-  // Instantiates a client. If you don't specify credentials when constructing
-  // the client, the client library will look for credentials in the
-  // environment.
-  // const storage = new Storage()
-  // // Makes an authenticated API request.
-  // async function listBuckets() {
-  //   try {
-  //     const results = await storage.getBuckets()
-
-  //     const [buckets] = results
-
-  //     console.log('Buckets:')
-  //     buckets.forEach((bucket) => {
-  //       console.log(bucket.name)
-  //     })
-  //   } catch (err) {
-  //     console.error('ERROR:', err)
-  //   }
-  // }
-  // listBuckets()
 
   const name = 'projects/laris-co-playground/secrets/yeeha/versions/latest'
 
@@ -75,7 +53,27 @@ app.get('/ss', async (req, res) => {
     console.info(`Found secret ${secret.name} (${policy})`)
   }
 
-  getSecret()
+  const parent = 'projects/laris-co-playground'
+
+  async function listSecrets() {
+    const [secrets] = await client.listSecrets({
+      parent: parent,
+    })
+
+    secrets.forEach((secret) => {
+      const policy = secret.replication.userManaged
+        ? secret.replication.userManaged
+        : secret.replication.automatic
+      console.log(`${secret.name} (${policy})`)
+    })
+  }
+
+  await listSecrets().catch((err) => {
+    console.error(err)
+  })
+  await getSecret().catch((err) => {
+    console.error(err)
+  })
 
   res.status(200).send('done')
 })
