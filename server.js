@@ -44,17 +44,17 @@ app.get('/check', (req, res) => {
   // Instantiates a client
   const client = new SecretManagerServiceClient()
 
-  async function getSecret() {
-    const [secret] = await client.getSecret({ name: 'yeeha' })
-    const policy = secret.replication.replication
+  // async function getSecret() {
+  //   const [secret] = await client.getSecret({ name: 'yeeha' })
+  //   const policy = secret.replication.replication
 
-    console.info(`Found secret ${secret.name} (${policy})`)
-  }
+  //   console.info(`Found secret ${secret.name} (${policy})`)
+  // }
 
-  getSecret()
-  let timer = setTimeout(() => {
-    res.status(500).send('timeout')
-  }, 4000)
+  // getSecret()
+  // let timer = setTimeout(() => {
+  //   res.status(500).send('timeout')
+  // }, 4000)
 
   const options = {
     port: 1883,
