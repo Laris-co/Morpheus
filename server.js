@@ -58,7 +58,7 @@ app.get('/ss', async (req, res) => {
       name: name,
     })
 
-    console.info(`Found secret ${version.name} with state ${version.state}`)
+    console.info(`Found secret ${version.name} with state ${version.state}`, version)
   }
   // const parent = 'projects/laris-co-playground'
   // async function listSecrets() {
