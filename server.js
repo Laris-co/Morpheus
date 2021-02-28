@@ -50,27 +50,27 @@ app.get('/ss', async (req, res) => {
 
     const policy = secret.replication.replication
 
-    console.info(`Found secret ${secret.name} (${policy})`)
+    console.info(`Found secret ${secret.name} (${policy})`, secret)
   }
 
-  const parent = 'projects/laris-co-playground'
+  // const parent = 'projects/laris-co-playground'
+  // async function listSecrets() {
+  //   const [secrets] = await client.listSecrets({
+  //     parent: parent,
+  //   })
 
-  async function listSecrets() {
-    const [secrets] = await client.listSecrets({
-      parent: parent,
-    })
+  //   secrets.forEach((secret) => {
+  //     const policy = secret.replication.userManaged
+  //       ? secret.replication.userManaged
+  //       : secret.replication.automatic
+  //     console.log(`${secret.name} (${policy})`, policy)
+  //   })
+  // }
 
-    secrets.forEach((secret) => {
-      const policy = secret.replication.userManaged
-        ? secret.replication.userManaged
-        : secret.replication.automatic
-      console.log(`${secret.name} (${policy})`, policy)
-    })
-  }
+  // await listSecrets().catch((err) => {
+  //   console.error(err)
+  // })
 
-  await listSecrets().catch((err) => {
-    console.error(err)
-  })
   await getSecret().catch((err) => {
     console.error(err)
   })
