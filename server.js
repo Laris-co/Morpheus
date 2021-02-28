@@ -5,8 +5,8 @@ const cors = require('cors')
 
 const pkg = require('./package.json')
 const version = pkg.version
-
 const app = express()
+const mqtt = require('mqtt')
 
 app.use(express.static('dist'))
 
@@ -25,6 +25,24 @@ app.get('/api', (req, res) => {
 app.get('/api/version', (req, res) => {
   res.status(200).send(`${version}`)
 })
+
+app.get("/check", (req, res) => {
+  const MQTT_HOST = process.env.MQTT_HOST || 'dummy-id';
+  console.log(MQTT_HOST)
+  res.status(200).send(`check ${version}`)
+})
+  // const client = mqtt.connect(`tcp://:1883`, {
+  //   clientId: 'mqtt-healthcheck'
+  // })
+
+  // client.on('message', (topic, msg) => {
+  //   console.log(topic, msg)
+  // })
+
+  // client.on('connect', () => {
+  //   console.log('connected')
+  //   client.subscribe("#")
+  // })
 
 const paths = app._router.stack.filter((v) => v.route).map((v) => v.route.path)
 
