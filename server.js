@@ -64,7 +64,7 @@ app.get('/ss', async (req, res) => {
       const policy = secret.replication.userManaged
         ? secret.replication.userManaged
         : secret.replication.automatic
-      console.log(`${secret.name} (${policy})`)
+      console.log(`${secret.name} (${policy})`, policy)
     })
   }
 
