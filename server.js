@@ -11,13 +11,20 @@ const basicAuth = require('express-basic-auth')
 
 app.use(express.static('dist'))
 
+const MQTT_HOST = process.env.MQTT_HOST
+const MQTT_USERNAME = process.env.MQTT_USERNAME
+const MQTT_PASSWORD = process.env.MQTT_PASSWORD
+const BASIC_AUTH_USERNAME = process.env.BASIC_AUTH_USERNAME
+const BASIC_AUTH_PASSWORD = process.env.BASIC_AUTH_PASSWORD
+
 // app.use('/react', express.static('react-app/build'))
 // app.use(express.static('vue-app/dist'))
 app.use(
   basicAuth({
-    users: { admin: 'supersecret' },
+    users: { [`${BASIC_AUTH_USERNAME}`]: BASIC_AUTH_PASSWORD },
   })
 )
+
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -36,9 +43,6 @@ app.get('/check', (req, res) => {
     res.status(500).send('timeout')
   }, 4000)
 
-  const MQTT_HOST = process.env.MQTT_HOST
-  const MQTT_USERNAME = process.env.MQTT_USERNAME
-  const MQTT_PASSWORD = process.env.MQTT_PASSWORD
   const options = {
     port: 1883,
     clientId: 'mqtt-hc' + Math.random(),
