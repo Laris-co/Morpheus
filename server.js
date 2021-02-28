@@ -10,7 +10,7 @@ const mqtt = require('mqtt')
 const basicAuth = require('express-basic-auth')
 
 app.use(express.static('dist'))
-
+const encrypted = require('@dtinth/encrypted')()
 const MQTT_HOST = process.env.MQTT_HOST
 const MQTT_USERNAME = process.env.MQTT_USERNAME
 const MQTT_PASSWORD = process.env.MQTT_PASSWORD
@@ -38,6 +38,21 @@ app.get('/api/version', (req, res) => {
   res.status(200).send(`${version}`)
 })
 
+const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
+
+// Instantiates a client
+const client = new SecretManagerServiceClient()
+
+async function getSecret() {
+  const [secret] = await client.getSecret({ name: 'yeeha' })
+
+  const policy = secret.replication.replication
+
+  console.info(`Found secret ${secret.name} (${policy})`)
+}
+
+getSecret()
+
 app.get('/check', (req, res) => {
   let timer = setTimeout(() => {
     res.status(500).send('timeout')
@@ -49,7 +64,7 @@ app.get('/check', (req, res) => {
     username: MQTT_USERNAME,
     password: MQTT_PASSWORD,
   }
-
+  // export ENCRYPTION_SECRET=`openssl rand -base64 32`
   console.log(options, `mqtt://${MQTT_HOST}`)
   const client = mqtt.connect(`mqtt://${MQTT_HOST}`, options)
 
