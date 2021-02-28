@@ -12,9 +12,9 @@ app.use(express.static('dist'))
 
 // app.use('/react', express.static('react-app/build'))
 // app.use(express.static('vue-app/dist'))
-app.use(basicAuth({
-    users: { 'admin': 'supersecret' }
-}))
+// app.use(basicAuth({
+//     users: { 'admin': 'supersecret' }
+// }))
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -29,7 +29,7 @@ app.get('/api/version', (req, res) => {
 })
 
 app.get("/check", (req, res) => {
-  const MQTT_HOST = process.env.MQTT_HOST || 'dummy-id';
+  const MQTT_HOST = process.env.MQTT_HOST
   console.log(MQTT_HOST)
   res.status(200).send(`check ${version}`)
 })

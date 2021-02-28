@@ -7,6 +7,15 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 ENV NODE_ENV=production
+ARG MQTT_USER
+ARG MQTT_HOST
+ARG MQTT_PORT
+ARG MQTT_PASSWORD
+
+env MQTT_USER=$MQTT_USER
+env MQTT_HOST=$MQTT_HOST
+env MQTT_PORT=$MQTT_PORT
+env MQTT_PASSWORD=$MQTT_PASSWORD
 # COPY .env ./.env
 
 # Install production dependencies.
