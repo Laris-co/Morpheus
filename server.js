@@ -80,7 +80,7 @@ app.get('/ss', async (req, res) => {
     let array = JSON.parse(payload)
     console.log(array, typeof array, array.toString())
     Promise.all(array.map((p) => mqttFactory(p.host, p))).then((output) => {
-      console.log(output)
+      console.log('output', output)
       res.status(200).json(output)
     })
   } catch (err) {
