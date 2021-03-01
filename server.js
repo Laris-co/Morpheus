@@ -72,7 +72,7 @@ app.get('/api/version', (req, res) => {
   res.status(200).send(`${version}`)
 })
 
-app.get('/ss', async (req, res) => {
+app.get('/check', async (req, res) => {
   try {
     let version = await accessSecretVersion()
     const payload = version.payload.data.toString()
@@ -88,7 +88,7 @@ app.get('/ss', async (req, res) => {
   }
 })
 
-app.get('/check', (req, res) => {})
+// app.get('/check', (req, res) => {})
 
 const paths = app._router.stack.filter((v) => v.route).map((v) => v.route.path)
 
