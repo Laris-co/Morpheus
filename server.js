@@ -76,7 +76,7 @@ app.get('/ss', async (req, res) => {
   try {
     let version = await accessSecretVersion()
     const payload = version.payload.data.toString()
-    // console.info(`Payload: ${payload}`)
+    console.info(`Payload: ${payload}`, typeof payload)
     let array = JSON.parse(payload)
     console.log(array, typeof array, array.toString())
     Promise.all(array.map((p) => mqttFactory(p.host, p))).then((output) => {
@@ -84,6 +84,7 @@ app.get('/ss', async (req, res) => {
       res.status(200).json(output)
     })
   } catch (err) {
+    console.error(err)
     res.status(500).send(err)
   }
 })
