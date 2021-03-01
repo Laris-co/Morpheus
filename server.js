@@ -89,9 +89,9 @@ app.get('/check', async (req, res) => {
 
 const paths = app._router.stack.filter((v) => v.route).map((v) => v.route.path)
 
-paths.forEach((path, idx) => {
-  console.log(`[${idx}] -> ${path}`)
-})
+// paths.forEach((path, idx) => {
+//   console.log(`[${idx}] -> ${path}`)
+// })
 
 // console.log(process.env)
 //start app
