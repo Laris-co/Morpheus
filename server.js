@@ -23,6 +23,33 @@ async function accessSecretVersion() {
   return version
 }
 
+function mqttFactory(host, options) {
+  return new Promise((resolve, reject) => {
+    const mqttClient = mqtt.connect(`mqtt://${host}`, options)
+    let topic = 'heartbeat/hc'
+    mqttClient.subscribe(topic)
+
+    let timer = setTimeout(() => {
+      reject(`Timeout: ${host}:${options.port}`)
+    }, 4000)
+
+    mqttClient.on('error', (err) => {
+      clearTimeout(timer)
+      reject(`Failed: ${host}:${options.port}`)
+    })
+
+    mqttClient.on('message', (topic, msg) => {
+      mqttClient.end()
+      clearTimeout(timer)
+      resolve(`OK: ${host}:${options.port}`)
+    })
+
+    mqttClient.on('connect', () => {
+      mqttClient.publish(topic, host)
+    })
+  })
+}
+
 // app.use('/react', express.static('react-app/build'))
 // app.use(express.static('vue-app/dist'))
 
@@ -54,39 +81,12 @@ app.get('/ss', async (req, res) => {
     console.log(array, typeof array, array.toString())
     Promise.all(array.map((p) => mqttFactory(p.host, p))).then((output) => {
       console.log(output)
-      res.status(200).send(output)
+      res.status(200).json(output)
     })
   } catch (err) {
     res.status(500).send(err)
   }
 })
-
-function mqttFactory(host, options) {
-  return new Promise((resolve, reject) => {
-    const mqttClient = mqtt.connect(`mqtt://${host}`, options)
-    let topic = 'heartbeat/hc'
-    mqttClient.subscribe(topic)
-
-    let timer = setTimeout(() => {
-      reject(`Timeout: ${host}:${options.port}`)
-    }, 4000)
-
-    mqttClient.on('error', (err) => {
-      clearTimeout(timer)
-      reject(`Failed: ${host}:${options.port}`)
-    })
-
-    mqttClient.on('message', (topic, msg) => {
-      mqttClient.end()
-      clearTimeout(timer)
-      resolve(`OK: ${host}:${options.port}`)
-    })
-
-    mqttClient.on('connect', () => {
-      mqttClient.publish(topic, host)
-    })
-  })
-}
 
 app.get('/check', (req, res) => {})
 
