@@ -10,14 +10,22 @@ const mqtt = require('mqtt')
 const basicAuth = require('express-basic-auth')
 
 app.use(express.static('dist'))
-const MQTT_HOST = process.env.MQTT_HOST
-const MQTT_USERNAME = process.env.MQTT_USERNAME
-const MQTT_PASSWORD = process.env.MQTT_PASSWORD
 const BASIC_AUTH_USERNAME = process.env.BASIC_AUTH_USERNAME
 const BASIC_AUTH_PASSWORD = process.env.BASIC_AUTH_PASSWORD
 
+const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
+const client = new SecretManagerServiceClient()
+async function accessSecretVersion() {
+  const name = 'projects/laris-co-playground/secrets/yeeha/versions/latest'
+  const [version] = await client.accessSecretVersion({
+    name: name,
+  })
+  return version
+}
+
 // app.use('/react', express.static('react-app/build'))
 // app.use(express.static('vue-app/dist'))
+
 app.use(
   basicAuth({
     users: { [`${BASIC_AUTH_USERNAME}`]: BASIC_AUTH_PASSWORD },
@@ -38,96 +46,47 @@ app.get('/api/version', (req, res) => {
 })
 
 app.get('/ss', async (req, res) => {
-  const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
-  const client = new SecretManagerServiceClient()
-
-  async function getSecret() {
-    const name = 'projects/laris-co-playground/secrets/yeeha'
-    const [secret] = await client.getSecret({
-      name: name,
-    })
-
-    const policy = secret.replication.replication
-
-    console.info(`Found secret ${secret.name} (${policy})`, secret)
-  }
-
-  async function getSecretVersion() {
-    const name = 'projects/laris-co-playground/secrets/yeeha/versions/latest'
-
-    // WARNING: Do not print the secret in a production environment - this
-    // snippet is showing how to access the secret material.
-    const [version] = await client.accessSecretVersion({
-      name: name,
-    })
+  try {
+    let version = await accessSecretVersion()
     const payload = version.payload.data.toString()
-
-    console.info(`Found secret ${version.name} with state ${version.state}`, version)
     console.info(`Payload: ${payload}`)
+    Promise.all(JSON.parse(payload).map((p) => mqttFactory(p.host, p))).then((output) => {
+      console.log(output)
+      res.status(200).send(output)
+    })
+  } catch (err) {
+    res.status(500).send(err)
   }
-  // const parent = 'projects/laris-co-playground'
-  // async function listSecrets() {
-  //   const [secrets] = await client.listSecrets({
-  //     parent: parent,
-  //   })
-
-  //   secrets.forEach((secret) => {
-  //     const policy = secret.replication.userManaged
-  //       ? secret.replication.userManaged
-  //       : secret.replication.automatic
-  //     console.log(`${secret.name} (${policy})`, policy)
-  //   })
-  // }
-
-  // await listSecrets().catch((err) => {
-  //   console.error(err)
-  // })
-
-  await getSecret().catch((err) => {
-    console.error(err)
-  })
-
-  await getSecretVersion().catch((err) => {
-    console.error(err)
-  })
-
-  res.status(200).send('done')
 })
 
-app.get('/check', (req, res) => {
-  let timer = setTimeout(() => {
-    res.status(500).send('timeout')
-  }, 4000)
+function mqttFactory(host, options) {
+  return new Promise((resolve, reject) => {
+    const mqttClient = mqtt.connect(`mqtt://${host}`, options)
+    let topic = 'heartbeat/hc'
+    mqttClient.subscribe(topic)
 
-  const options = {
-    port: 1883,
-    clientId: 'mqtt-hc' + Math.random(),
-    username: MQTT_USERNAME,
-    password: MQTT_PASSWORD,
-  }
+    let timer = setTimeout(() => {
+      reject(`Timeout: ${host}:${options.port}`)
+    }, 4000)
 
-  const mqttClient = mqtt.connect(`mqtt://${MQTT_HOST}`, options)
-  let done = false
+    mqttClient.on('error', (err) => {
+      clearTimeout(timer)
+      reject(`Failed: ${host}:${options.port}`)
+    })
 
-  mqttClient.on('message', (topic, msg) => {
-    if (done) return
-    done = true
-    console.log(topic, msg)
-    mqttClient.end()
-    res.status(200).send(`OK`)
-    clearTimeout(timer)
+    mqttClient.on('message', (topic, msg) => {
+      mqttClient.end()
+      clearTimeout(timer)
+      resolve(`OK: ${host}:${options.port}`)
+    })
+
+    mqttClient.on('connect', () => {
+      mqttClient.publish(topic, host)
+    })
   })
+}
 
-  mqttClient.on('connect', () => {
-    console.log('connected')
-    mqttClient.subscribe('#')
-  })
-
-  mqttClient.on('error', (err) => {
-    res.status(500).send(`FAILED: ${err}`)
-    clearTimeout(timer)
-  })
-})
+app.get('/check', (req, res) => {})
 
 const paths = app._router.stack.filter((v) => v.route).map((v) => v.route.path)
 
