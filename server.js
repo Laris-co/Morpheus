@@ -76,10 +76,7 @@ app.get('/check', async (req, res) => {
   try {
     let version = await accessSecretVersion()
     const payload = version.payload.data.toString()
-    console.info(`Payload: ${payload}`, typeof payload)
-    let array = JSON.parse(payload)
-    console.log(array, typeof array, array.toString())
-    Promise.all(array.map((p) => mqttFactory(p.host, p))).then((output) => {
+    Promise.all(JSON.parse(payload).map((p) => mqttFactory(p.host, p))).then((output) => {
       res.status(200).json(output)
     })
   } catch (err) {
