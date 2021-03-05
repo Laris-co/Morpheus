@@ -10,11 +10,8 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GLOBAL_PROJECT_ID }}
   RUN_REGION: ${{ secrets.GLOBAL_RUN_REGION }}
-  DOT_ENV: ${{ secrets.DOT_ENV }}
-  MQTT_CLIENTS_SECRET_MANAGER_PATH: ${{ secrets.MQTT_CLIENTS_SECRET_MANAGER_PATH }}
   BASIC_AUTH_USERNAME: ${{ secrets.GLOBAL_BASIC_AUTH_USERNAME_N }}
   BASIC_AUTH_PASSWORD: ${{ secrets.GLOBAL_BASIC_AUTH_PASSWORD_N }}
-  MQTT_PORT: ${{ secrets.MQTT_PORT }}
   REPO_NAME: ${{ github.event.repository.name }}
   REPO_OWNER: ${{ github.event.repository.owner.login }}
   SA: ${{ secrets.GLOBAL_SA_KEY }}
